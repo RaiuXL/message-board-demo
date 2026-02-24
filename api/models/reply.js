@@ -2,16 +2,12 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   return sequelize.define(
-    'Message',
+    'Reply',
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
-      },
-      title: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
       },
       body: {
         type: DataTypes.TEXT,
@@ -21,9 +17,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(150),
         allowNull: false,
       },
+      message_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
     },
     {
-      tableName: 'messages',
+      tableName: 'replies',
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: false,

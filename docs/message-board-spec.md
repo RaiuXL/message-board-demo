@@ -17,10 +17,12 @@ Frontend:
 Backend:
 - Node.js
 - Express
-- mysql2 (no ORM)
+- mysql2
+- Sequelize ORM
 
 Database:
 - MySQL (Docker)
+- Managed via Sequelize models
 
 ---
 
