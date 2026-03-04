@@ -1,23 +1,40 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: 'mysql',
-    logging: process.env.NODE_ENV === 'test' ? false : console.log,
-    define: {
-      underscored: true,
-      timestamps: true,
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-    },
-  }
-);
+const dialect = process.env.DB_DIALECT || 'mysql';
+const logging = process.env.NODE_ENV === 'test' ? false : console.log;
+const define = {
+  underscored: true,
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
+};
+
+const sequelizeOptions =
+  dialect === 'sqlite'
+    ? {
+        dialect,
+        storage: process.env.DB_STORAGE || ':memory:',
+        logging,
+        define,
+      }
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+        dialect,
+        logging,
+        define,
+      };
+
+const sequelize =
+  dialect === 'sqlite'
+    ? new Sequelize(sequelizeOptions)
+    : new Sequelize(
+        process.env.DB_NAME || 'message_board',
+        process.env.DB_USER || 'root',
+        process.env.DB_PASSWORD || '',
+        sequelizeOptions
+      );
 
 const Message = require('./message')(sequelize);
 const Reply = require('./reply')(sequelize);

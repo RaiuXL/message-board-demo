@@ -1,20 +1,8 @@
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
 const { sequelize } = require('./models');
-const messagesRouter = require('./routes/messages');
+const { createApp } = require('./app');
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.use('/messages', messagesRouter);
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
-});
-
+const app = createApp();
 const PORT = process.env.PORT;
 
 async function start() {

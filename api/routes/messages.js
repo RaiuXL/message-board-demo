@@ -4,7 +4,21 @@ const { Message, Reply } = require('../models');
 
 const router = express.Router();
 
-// if there is no message associated with the id provided
+async function loadMessage(req, res, next) {
+  try {
+    const message = await Message.findByPk(req.messageId);
+    if (!message) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    req.message = message;
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+// if provided id is invalid
 router.param('id', (req, res, next, id) => {
   const parsed = Number(id);
   if (!Number.isInteger(parsed) || parsed <= 0) {
@@ -55,25 +69,20 @@ router.get('/', async (req, res, next) => {
 });
 
 // retrieve message associated with id
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', loadMessage, async (req, res, next) => {
   try {
-    const message = await Message.findByPk(req.messageId);
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
-
     const replies = await Reply.findAll({
       where: { message_id: req.messageId },
       order: [['created_at', 'ASC']],
     });
 
-    res.json({ ...message.get({ plain: true }), replies });
+    res.json({ ...req.message.get({ plain: true }), replies });
   } catch (error) {
     next(error);
   }
 });
 
-// insert new message
+//insert new message
 router.post('/', async (req, res, next) => {
   try {
     const { title, body, author_name } = req.body;
@@ -93,7 +102,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// delete message associated with id
+//delete message
 router.delete('/:id', async (req, res, next) => {
   try {
     const deleted = await Message.destroy({ where: { id: req.messageId } });
@@ -108,13 +117,8 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 // insert a reply to message
-router.post('/:id/replies', async (req, res, next) => {
+router.post('/:id/replies', loadMessage, async (req, res, next) => {
   try {
-    const message = await Message.findByPk(req.messageId);
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
-
     const { body, author_name } = req.body;
     if (!body || !author_name) {
       return res.status(400).json({ error: 'body and author_name are required' });
@@ -133,13 +137,8 @@ router.post('/:id/replies', async (req, res, next) => {
 });
 
 // retrieve all replies from message associated with id
-router.get('/:id/replies', async (req, res, next) => {
+router.get('/:id/replies', loadMessage, async (req, res, next) => {
   try {
-    const message = await Message.findByPk(req.messageId);
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
-
     const replies = await Reply.findAll({
       where: { message_id: req.messageId },
       order: [['created_at', 'ASC']],

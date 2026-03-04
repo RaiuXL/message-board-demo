@@ -23,44 +23,10 @@ Add automated tests across the full stack to prevent regressions.
 - Automate real browser
 - Simulate full user flows
 
-## Deliverables Checklist
+## Current Project Stack
 
-- [ ] Select backend unit testing framework
-- [ ] Select frontend unit testing framework
-- [ ] Select integration testing tool
-- [ ] Select E2E testing tool
-- [ ] Build demo CRUD app
-- [ ] Implement all four test types
-- [ ] Push example repo to GitHub
-- [ ] Submit link to Canvas
-
-## My Project Stack
-
-- Frontend: React SPA (Vite)
-- Backend: Node + Express
-- Database: MySQL
-- Containerization: Docker
-- ORM: (if any)
-
-## My Project Stack
-
-- Frontend: React SPA (Vite)
-- Backend: Node + Express
-- Database: MySQL
-- Containerization: Docker
-- ORM: (if any)
-- Auth: (if any)
-
-## AI Context Summary
-
-Goal: Demonstrate all four test types in a stack matching my production app.
-
-Stack: React + Express + MySQL + Docker
-
-Required:
-- Backend unit testing
-- Frontend unit testing
-- Integration testing
-- E2E testing
-
-Output: Example CRUD repo with tests configured.
+- **Frontend:** Next.js 16 (app router + Turbopack) with React 19 + Tailwind CSS
+- **Backend:** Node 20 + Express, using `mysql2` + Sequelize for the data layer
+- **Database:** Targets MySQL by default but falls back to SQLite (in-memory) for Jest/Playwright suites; migrations are handled via Sequelize models
+- **Containerization:** Not required (no Docker files tracked)
+- **Auth:** None (open staff message board)
